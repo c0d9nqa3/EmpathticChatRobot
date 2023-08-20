@@ -1,0 +1,258 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html,
+        body {
+            height: 100%;
+        }
+
+        body {
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        }
+
+        .talk {
+            margin: 0 auto;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: #222;
+        }
+
+        .title {
+            line-height: 100px;
+            text-align: center;
+            width: 100%;
+            height: 100px;
+            position: relative;
+            font-size: 36px;
+            color: #fff;
+            background-color: #333;
+            border-bottom: 1px solid #444;
+        }
+
+
+
+        .talk_con {
+            width: 80%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .talk_show {
+            width: 80%;
+            height: 522px;
+            overflow-y: scroll;
+            margin-top: 10px;
+            background-color: #fff;
+            border: 1px solid #444;
+        }
+
+        .talk_input {
+            width: 80%;
+            height: 70px;
+            margin-top: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .talk_word {
+            margin: 0 20px;
+            width: 70%;
+            height: 40px;
+            padding: 0px;
+            outline: none;
+            text-indent: 10px;
+            border: 1px solid #223344;
+            border-radius: 5px;
+        }
+
+        .talk_sub {
+            margin-right: 20px;
+            width: 100px;
+            height: 40px;
+            border-radius: 5px;
+            border: none;
+            background-color: #2d5db5;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .talk_sub:hover {
+            background-color: #223344;
+        }
+
+        .atalk {
+            margin: 10px;
+            display: flex;
+        }
+
+        .atalk span {
+            display: inline-block;
+            background: #223344;
+            border-radius: 10px;
+            color: #fff;
+            padding: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            font-size: 16px;
+        }
+
+        .btalk {
+            margin: 10px;
+            text-align: right;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .btalk span {
+            display: inline-block;
+            background: #2d5db5;
+            border-radius: 10px;
+            color: #fff;
+            padding: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            font-size: 16px;
+        }
+
+        .back input {
+            position: absolute;
+            z-index: 999;
+            top: 50px;
+            right: 120px;
+            width: 50px;
+        }
+        #download-button{
+            position: fixed;
+            top: 10px;
+            right: 10px;
+        }
+    </style>
+    <!--<link rel="stylesheet" type="text/css" href="{%static 'index.css'%}"> -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+
+<div class="talk">
+    <div class="title" id="title">
+        Empathetic dialogue chatbot
+    </div>
+
+
+
+    <select id="model-selector" name="model">
+    <option value="GPT-2">GPT-2</option>
+    <option value="ChitChat(Chinese)">ChitChat(Chinese)</option>
+    <option value="EmpDG">EmpDG</option>
+  </select>
+    <button id="clear-chat-button">确认</button>
+    <div class="talk_con" id="talk_con">
+        <div class="talk_show" id="words" style="overflow: scroll;">
+            <div class="atalk"><span class="asay" id="talk1" id="asay">Welcome</span></div>
+        </div>
+        <div class="talk_input">
+
+            <input type="text" class="talk_word" id="talkwords">
+            <input type="button" value="发送信息" class="talk_sub" id="talksub">
+        </div>
+    </div>
+</div>
+<script>
+
+    const modelSelector = document.getElementById("model-selector");
+    const clearChatButton = document.getElementById("clear-chat-button");
+    const chatBox = document.getElementById("words");
+    const model_type = modelSelector.value;   //获取当前模型的值
+    clearChatButton.addEventListener("click", () => {
+        chatBox.innerHTML = ""; // 清空聊天框
+        const model_type = modelSelector.value;   //获取当前模型的值
+        var div2 = document.createElement("div");
+        div2.setAttribute("class", "atalk");
+        var span2 = document.createElement("span");
+        span2.setAttribute("class", "asay");
+        span2.innerText = model_type+"Chatbot:Welcome";
+        div2.appendChild(span2);
+        words.appendChild(div2);
+
+    });
+    // 获取页面元素
+    var talk_con = document.getElementById("talk_con");
+    var talkwords = document.getElementById("talkwords");
+    var talksub = document.getElementById("talksub");
+    var words = document.getElementById("words");
+    // 添加事件监听器
+    talksub.addEventListener("click", function () {
+
+        const model_type = modelSelector.value;   //获取当前模型的值
+        var message = talkwords.value;
+        if(message==""){
+            alert("请输入内容！");
+        }
+        else{
+            var time = new Date();
+            var time_format = time.toLocaleString()
+            var div1 = document.createElement("div");
+            div1.setAttribute("class", "btalk");
+            var span1 = document.createElement("span");
+            span1.setAttribute("class", "bsay");
+            span1.innerText = message;
+            div1.appendChild(span1);
+            words.appendChild(div1);
+            talkwords.value = "";
+            var reply = '';
+            //定义机器人回复
+            $.ajax({
+                url: 'receive_data/',
+                dataType: 'json',
+                data: {mydata: message,model:model_type},
+                success: function (data) {
+                    reply = data.reply;
+                    getResponse(reply);
+                }
+            });
+        }
+    });
+    // 模拟回复
+    function getResponse(reply) {
+        const model_type = modelSelector.value;   //获取当前模型的值
+        var div2 = document.createElement("div");
+        div2.setAttribute("class", "atalk");
+        var span2 = document.createElement("span");
+        var time = new Date();
+        var time_format = time.toLocaleString()
+        span2.setAttribute("class", "asay");
+        span2.innerText = model_type+"chatbot:" + reply;
+        div2.appendChild(span2);
+        words.appendChild(div2);
+    }
+
+    //按照选择的模型下载聊天记录
+    function downloadFile() {
+        var link = document.createElement("a");
+        const modelSelector = document.getElementById("model-selector");
+        print(modelSelector)
+        link.href = "C:/pythonproject/FullChatBot/output_EmpDG.txt";
+        link.download = "chat_records.txt";
+
+        // 触发下载操作
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+}
+</script>
+</body>
+</html>

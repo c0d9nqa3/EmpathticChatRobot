@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>My Django App</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  </head>
+  <body>
+    <h1>My Data</h1>
+    <ul>
+      <li><strong>Name:</strong> <span id="name"></span></li>
+      <li><strong>Age:</strong> <span id="age"></span></li>
+      <li><strong>Gender:</strong> <span id="gender"></span></li>
+
+      <li><strong>Test_Get_Message:</strong> <span id="message"></span></li>
+    </ul>
+    <script>
+      $.ajax({
+        url: 'get_data/',
+        dataType: 'json',
+        success: function(data) {
+          $('#name').text(data.name);
+          $('#age').text(data.age);
+          $('#gender').text(data.gender);
+        }
+      });
+    </script>
+      <script>
+      $.ajax({
+        url: 'receive_data/',
+        dataType: 'json',
+        success: function(data) {
+            $('#message').text(data);
+        }
+      });
+    </script>
+  </body>
+</html>
